@@ -1,0 +1,9 @@
+{
+  "services": {
+    "send": {"name": "Envoyer un SMS", "description": "Envoie un SMS avec le modem Huawei.", "fields": {"phone_number": {"name": "Numéro de téléphone"}, "message": {"name": "Message"}}},
+    "delete": {"name": "Supprimer un SMS", "description": "Supprime un message de la boîte de réception.", "fields": {"message_id": {"name": "Identifiant du SMS"}}},
+    "delete_all": {"name": "Supprimer tous les SMS", "description": "Supprime définitivement tous les messages de la boîte de réception."},
+    "add_contact": {"name": "Ajouter un contact SIM", "description": "Ajoute un contact au répertoire de la carte SIM.", "fields": {"name": {"name": "Nom"}, "phone_number": {"name": "Numéro de téléphone"}}},
+    "delete_contact": {"name": "Supprimer un contact SIM", "description": "Supprime un contact du répertoire de la carte SIM.", "fields": {"contact_id": {"name": "Identifiant du contact"}}}
+  }
+}

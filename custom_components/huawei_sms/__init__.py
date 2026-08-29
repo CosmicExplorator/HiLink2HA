@@ -1,0 +1,2 @@
+"""Huawei SMS Inbox integration."""
+

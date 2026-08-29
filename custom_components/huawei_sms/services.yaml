@@ -1,0 +1,40 @@
+send:
+  fields:
+    phone_number:
+      required: true
+      example: "+33612345678"
+      selector:
+        text:
+    message:
+      required: true
+      selector:
+        text:
+          multiline: true
+delete:
+  fields:
+    message_id:
+      required: true
+      example: 40145
+      selector:
+        number:
+          min: 0
+          mode: box
+delete_all: {}
+add_contact:
+  fields:
+    name:
+      required: true
+      selector:
+        text:
+    phone_number:
+      required: true
+      selector:
+        text:
+delete_contact:
+  fields:
+    contact_id:
+      required: true
+      selector:
+        number:
+          min: 0
+          mode: box

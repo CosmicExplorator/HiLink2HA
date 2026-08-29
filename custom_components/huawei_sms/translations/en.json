@@ -1,0 +1,9 @@
+{
+  "services": {
+    "send": {"name": "Send SMS", "description": "Send an SMS through the Huawei modem.", "fields": {"phone_number": {"name": "Phone number"}, "message": {"name": "Message"}}},
+    "delete": {"name": "Delete SMS", "description": "Delete one inbox message.", "fields": {"message_id": {"name": "Message ID"}}},
+    "delete_all": {"name": "Delete all SMS", "description": "Permanently delete every inbox message."},
+    "add_contact": {"name": "Add SIM contact", "description": "Add a contact to the SIM phone book.", "fields": {"name": {"name": "Name"}, "phone_number": {"name": "Phone number"}}},
+    "delete_contact": {"name": "Delete SIM contact", "description": "Delete a contact from the SIM phone book.", "fields": {"contact_id": {"name": "Contact ID"}}}
+  }
+}
