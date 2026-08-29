@@ -1,9 +1,93 @@
 {
   "services": {
-    "send": {"name": "Envoyer un SMS", "description": "Envoie un SMS avec le modem Huawei.", "fields": {"phone_number": {"name": "Numéro de téléphone"}, "message": {"name": "Message"}}},
-    "delete": {"name": "Supprimer un SMS", "description": "Supprime un message de la boîte de réception.", "fields": {"message_id": {"name": "Identifiant du SMS"}}},
-    "delete_all": {"name": "Supprimer tous les SMS", "description": "Supprime définitivement tous les messages de la boîte de réception."},
-    "add_contact": {"name": "Ajouter un contact SIM", "description": "Ajoute un contact au répertoire de la carte SIM.", "fields": {"name": {"name": "Nom"}, "phone_number": {"name": "Numéro de téléphone"}}},
-    "delete_contact": {"name": "Supprimer un contact SIM", "description": "Supprime un contact du répertoire de la carte SIM.", "fields": {"contact_id": {"name": "Identifiant du contact"}}}
+    "send": {
+      "name": "Envoyer un SMS",
+      "description": "Envoie un SMS avec le modem Huawei.",
+      "fields": {
+        "phone_number": {
+          "name": "Numéro de téléphone"
+        },
+        "message": {
+          "name": "Message"
+        }
+      }
+    },
+    "delete": {
+      "name": "Supprimer un SMS",
+      "description": "Supprime un message de la boîte de réception.",
+      "fields": {
+        "message_id": {
+          "name": "Identifiant du SMS"
+        }
+      }
+    },
+    "delete_all": {
+      "name": "Supprimer tous les SMS",
+      "description": "Supprime définitivement tous les messages de la boîte de réception."
+    },
+    "add_contact": {
+      "name": "Ajouter un contact SIM",
+      "description": "Ajoute un contact au répertoire de la carte SIM.",
+      "fields": {
+        "name": {
+          "name": "Nom"
+        },
+        "phone_number": {
+          "name": "Numéro de téléphone"
+        }
+      }
+    },
+    "delete_contact": {
+      "name": "Supprimer un contact SIM",
+      "description": "Supprime un contact du répertoire de la carte SIM.",
+      "fields": {
+        "contact_id": {
+          "name": "Identifiant du contact"
+        }
+      }
+    }
+  },
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connexion à un modem Huawei HiLink",
+        "description": "Le test de connexion lit uniquement le compteur de SMS.",
+        "data": {
+          "name": "Nom",
+          "url": "Adresse du modem"
+        },
+        "data_description": {
+          "url": "Généralement http://192.168.8.1/"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossible de se connecter au modem.",
+      "invalid_url": "L’adresse du modem est invalide."
+    },
+    "abort": {
+      "single_instance_allowed": "Cette version ne prend en charge qu’un seul modem.",
+      "already_configured": "Ce modem est déjà configuré."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options des SMS Huawei",
+        "data": {
+          "max_messages": "Nombre maximal de messages",
+          "country_code": "Indicatif téléphonique du pays",
+          "allowed_senders": "Expéditeurs autorisés",
+          "interactions_file": "Fichier YAML d’interactions"
+        },
+        "data_description": {
+          "allowed_senders": "Un numéro par ligne. Laissez vide pour désactiver les commandes par SMS.",
+          "interactions_file": "Chemin absolu du fichier associant les entités autorisées."
+        }
+      }
+    },
+    "error": {
+      "invalid_phone_number": "Saisissez des numéros valides, un par ligne."
+    }
   }
 }

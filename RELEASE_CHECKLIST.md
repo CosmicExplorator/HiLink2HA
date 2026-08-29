@@ -18,7 +18,9 @@ This file tracks the work required before publishing Huawei HiLink SMS through H
 
 ## Integration quality
 
-- [ ] Add UI configuration (`config_flow`) while keeping a documented YAML migration path
+- [x] Add UI configuration (`config_flow`) while keeping a documented YAML migration path
+- [x] Add a read-only modem connection test to the UI setup
+- [x] Add editable UI options with automatic integration reload
 - [ ] Move modem I/O into a shared client/coordinator
 - [ ] Avoid registering duplicate services when multiple modems are configured
 - [ ] Add device and entity metadata

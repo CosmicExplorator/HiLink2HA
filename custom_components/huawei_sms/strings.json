@@ -1,9 +1,93 @@
 {
   "services": {
-    "send": {"name": "Send SMS", "description": "Send an SMS through the Huawei modem.", "fields": {"phone_number": {"name": "Phone number"}, "message": {"name": "Message"}}},
-    "delete": {"name": "Delete SMS", "description": "Delete one inbox message.", "fields": {"message_id": {"name": "Message ID"}}},
-    "delete_all": {"name": "Delete all SMS", "description": "Permanently delete every inbox message."},
-    "add_contact": {"name": "Add SIM contact", "description": "Add a contact to the SIM phone book.", "fields": {"name": {"name": "Name"}, "phone_number": {"name": "Phone number"}}},
-    "delete_contact": {"name": "Delete SIM contact", "description": "Delete a contact from the SIM phone book.", "fields": {"contact_id": {"name": "Contact ID"}}}
+    "send": {
+      "name": "Send SMS",
+      "description": "Send an SMS through the Huawei modem.",
+      "fields": {
+        "phone_number": {
+          "name": "Phone number"
+        },
+        "message": {
+          "name": "Message"
+        }
+      }
+    },
+    "delete": {
+      "name": "Delete SMS",
+      "description": "Delete one inbox message.",
+      "fields": {
+        "message_id": {
+          "name": "Message ID"
+        }
+      }
+    },
+    "delete_all": {
+      "name": "Delete all SMS",
+      "description": "Permanently delete every inbox message."
+    },
+    "add_contact": {
+      "name": "Add SIM contact",
+      "description": "Add a contact to the SIM phone book.",
+      "fields": {
+        "name": {
+          "name": "Name"
+        },
+        "phone_number": {
+          "name": "Phone number"
+        }
+      }
+    },
+    "delete_contact": {
+      "name": "Delete SIM contact",
+      "description": "Delete a contact from the SIM phone book.",
+      "fields": {
+        "contact_id": {
+          "name": "Contact ID"
+        }
+      }
+    }
+  },
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to a Huawei HiLink modem",
+        "description": "The connection test only reads the SMS counter.",
+        "data": {
+          "name": "Name",
+          "url": "Modem URL"
+        },
+        "data_description": {
+          "url": "Usually http://192.168.8.1/"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to the modem.",
+      "invalid_url": "The modem URL is invalid."
+    },
+    "abort": {
+      "single_instance_allowed": "Only one modem is supported in this version.",
+      "already_configured": "This modem is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Huawei SMS options",
+        "data": {
+          "max_messages": "Maximum messages",
+          "country_code": "Country calling code",
+          "allowed_senders": "Allowed senders",
+          "interactions_file": "Interactions YAML file"
+        },
+        "data_description": {
+          "allowed_senders": "One number per line. Leave empty to disable SMS commands.",
+          "interactions_file": "Absolute path to the allow-listed entity mapping."
+        }
+      }
+    },
+    "error": {
+      "invalid_phone_number": "Enter valid phone numbers, one per line."
+    }
   }
 }

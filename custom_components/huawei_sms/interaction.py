@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from enum import StrEnum
 import re
 import unicodedata
+from dataclasses import dataclass
+from enum import StrEnum
 
 
 class SmsType(StrEnum):
@@ -60,9 +60,7 @@ def normalize_sms(message: str) -> str:
     """Remove accents, fold case and collapse whitespace."""
     normalized = unicodedata.normalize("NFKD", message)
     normalized = "".join(
-        character
-        for character in normalized
-        if not unicodedata.combining(character)
+        character for character in normalized if not unicodedata.combining(character)
     )
     return re.sub(r"\s+", " ", normalized).strip().lower()
 
@@ -112,4 +110,3 @@ def validate_sms(message: str) -> ValidationResult:
         room=match.group("room").strip(),
         payload=match.group("payload").strip(),
     )
-

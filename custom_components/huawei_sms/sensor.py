@@ -2,25 +2,33 @@
 
 from __future__ import annotations
 
-from datetime import timedelta
 import logging
 import re
+from datetime import timedelta
 from typing import Any
 
+import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
-
 from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_NAME, CONF_URL
 from homeassistant.core import HomeAssistant, ServiceCall
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 from homeassistant.util import dt as dt_util
 from homeassistant.util import yaml as yaml_util
-
 from huawei_lte_api.Client import Client
 from huawei_lte_api.Connection import Connection
 
+from .const import (
+    CONF_ALLOWED_SENDERS,
+    CONF_COUNTRY_CODE,
+    CONF_INTERACTIONS_FILE,
+    CONF_MAX_MESSAGES,
+    DEFAULT_COUNTRY_CODE,
+    DEFAULT_INTERACTIONS_FILE,
+    DEFAULT_MAX_MESSAGES,
+)
 from .dictionary import understand
 from .dispatcher import InteractionDispatcher
 from .interaction import can_reply_to_sender, validate_sms
@@ -62,13 +70,20 @@ async def async_setup_platform(
     discovery_info: DiscoveryInfoType | None = None,
 ) -> None:
     """Set up the Huawei SMS inbox sensor."""
-    interactions = await hass.async_add_executor_job(
-        yaml_util.load_yaml, config["interactions_file"]
-    )
+    if config["allowed_senders"]:
+        interactions = await hass.async_add_executor_job(
+            yaml_util.load_yaml, config["interactions_file"]
+        )
+    else:
+        interactions = {"targets": {}}
     dispatcher = InteractionDispatcher(hass, EntityResolver(interactions))
     sensor = HuaweiSmsInboxSensor(
-        config[CONF_NAME], config[CONF_URL], config["max_messages"],
-        config["country_code"], config["allowed_senders"], dispatcher
+        config[CONF_NAME],
+        config[CONF_URL],
+        config["max_messages"],
+        config["country_code"],
+        config["allowed_senders"],
+        dispatcher,
     )
 
     async def async_send_sms(call: ServiceCall) -> None:
@@ -105,7 +120,9 @@ async def async_setup_platform(
 
     if not hass.services.has_service("huawei_sms", "send"):
         hass.services.async_register(
-            "huawei_sms", "send", async_send_sms,
+            "huawei_sms",
+            "send",
+            async_send_sms,
             schema=vol.Schema(
                 {
                     vol.Required("phone_number"): cv.string,
@@ -116,18 +133,24 @@ async def async_setup_platform(
 
     if not hass.services.has_service("huawei_sms", "delete"):
         hass.services.async_register(
-            "huawei_sms", "delete", async_delete_sms,
+            "huawei_sms",
+            "delete",
+            async_delete_sms,
             schema=vol.Schema({vol.Required("message_id"): vol.Coerce(int)}),
         )
 
     if not hass.services.has_service("huawei_sms", "delete_all"):
         hass.services.async_register(
-            "huawei_sms", "delete_all", async_delete_all_sms,
+            "huawei_sms",
+            "delete_all",
+            async_delete_all_sms,
         )
 
     if not hass.services.has_service("huawei_sms", "add_contact"):
         hass.services.async_register(
-            "huawei_sms", "add_contact", async_add_contact,
+            "huawei_sms",
+            "add_contact",
+            async_add_contact,
             schema=vol.Schema(
                 {
                     vol.Required("name"): cv.string,
@@ -138,11 +161,33 @@ async def async_setup_platform(
 
     if not hass.services.has_service("huawei_sms", "delete_contact"):
         hass.services.async_register(
-            "huawei_sms", "delete_contact", async_delete_contact,
+            "huawei_sms",
+            "delete_contact",
+            async_delete_contact,
             schema=vol.Schema({vol.Required("contact_id"): vol.Coerce(int)}),
         )
 
     add_entities([sensor], True)
+
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up the sensor from a UI config entry."""
+    options = entry.options
+    config: ConfigType = {
+        CONF_NAME: entry.title,
+        CONF_URL: entry.data[CONF_URL],
+        "max_messages": options.get(CONF_MAX_MESSAGES, DEFAULT_MAX_MESSAGES),
+        "country_code": options.get(CONF_COUNTRY_CODE, DEFAULT_COUNTRY_CODE),
+        "allowed_senders": options.get(CONF_ALLOWED_SENDERS, []),
+        "interactions_file": options.get(
+            CONF_INTERACTIONS_FILE, DEFAULT_INTERACTIONS_FILE
+        ),
+    }
+    await async_setup_platform(hass, config, async_add_entities)
 
 
 class HuaweiSmsInboxSensor(SensorEntity):
@@ -200,9 +245,7 @@ class HuaweiSmsInboxSensor(SensorEntity):
                 # A phone-book failure must not discard an inbox already fetched.
                 try:
                     contacts = self._normalize_contacts(
-                        client.pb.get_pb_list(
-                            read_count=50, save_type=SIM_SAVE_TYPE
-                        )
+                        client.pb.get_pb_list(read_count=50, save_type=SIM_SAVE_TYPE)
                     )
                 except Exception:  # noqa: BLE001 - optional modem feature
                     contacts = self._contacts
@@ -260,22 +303,12 @@ class HuaweiSmsInboxSensor(SensorEntity):
         # older PhoneBook > PbList > PbItem shape as a compatibility fallback.
         phonebooks = payload.get("Phonebooks", {})
         entries = (
-            phonebooks.get("Phonebook", [])
-            if isinstance(phonebooks, dict)
-            else []
+            phonebooks.get("Phonebook", []) if isinstance(phonebooks, dict) else []
         )
         if not entries:
             phonebook = payload.get("PhoneBook", payload)
-            pb_list = (
-                phonebook.get("PbList", {})
-                if isinstance(phonebook, dict)
-                else {}
-            )
-            entries = (
-                pb_list.get("PbItem", [])
-                if isinstance(pb_list, dict)
-                else []
-            )
+            pb_list = phonebook.get("PbList", {}) if isinstance(phonebook, dict) else {}
+            entries = pb_list.get("PbItem", []) if isinstance(pb_list, dict) else []
         if isinstance(entries, dict):
             entries = [entries]
 
@@ -306,9 +339,7 @@ class HuaweiSmsInboxSensor(SensorEntity):
 
     def _process_new_messages(self, messages: list[dict[str, Any]]) -> None:
         """Validate new messages and publish one event for each of them."""
-        current_ids = {
-            message["id"] for message in messages if message.get("id")
-        }
+        current_ids = {message["id"] for message in messages if message.get("id")}
 
         if self._inbox_initialized:
             for message in reversed(messages):
@@ -318,9 +349,7 @@ class HuaweiSmsInboxSensor(SensorEntity):
 
                 sender = str(message.get("from", "")).strip()
                 if self._normalize_number(sender) not in self._allowed_senders:
-                    _LOGGER.warning(
-                        "SMS Huawei ignoré: expéditeur non autorisé"
-                    )
+                    _LOGGER.warning("SMS Huawei ignoré: expéditeur non autorisé")
                     continue
 
                 validation = validate_sms(message.get("content", ""))
@@ -350,15 +379,11 @@ class HuaweiSmsInboxSensor(SensorEntity):
         self._known_message_ids = current_ids
         self._inbox_initialized = True
 
-    async def _async_handle_interaction(
-        self, sender: str, validation: Any
-    ) -> None:
+    async def _async_handle_interaction(self, sender: str, validation: Any) -> None:
         """Interpret, dispatch and reply to an authorized SMS."""
         try:
             intent = understand(validation.payload or "")
-            reply = await self._dispatcher.async_dispatch(
-                validation.room or "", intent
-            )
+            reply = await self._dispatcher.async_dispatch(validation.room or "", intent)
         except Exception as err:  # noqa: BLE001 - reply with safe error
             _LOGGER.warning("Interaction SMS refusée: %s", err)
             reply = f"Erreur: {err}"
@@ -367,9 +392,7 @@ class HuaweiSmsInboxSensor(SensorEntity):
     async def _async_reply(self, sender: str, reply: str) -> None:
         """Send a reply without blocking the event loop."""
         try:
-            await self.hass.async_add_executor_job(
-                self.send_message, sender, reply
-            )
+            await self.hass.async_add_executor_job(self.send_message, sender, reply)
         except Exception:  # noqa: BLE001 - interaction remains processed
             _LOGGER.warning("Impossible d envoyer la reponse SMS", exc_info=True)
 
@@ -379,7 +402,9 @@ class HuaweiSmsInboxSensor(SensorEntity):
             with Connection(self._url) as connection:
                 Client(connection).sms.send_sms([phone_number], message)
         except Exception:  # noqa: BLE001 - modem/API errors are surfaced in logs
-            _LOGGER.exception("Impossible d envoyer le SMS Huawei vers %s", phone_number)
+            _LOGGER.exception(
+                "Impossible d envoyer le SMS Huawei vers %s", phone_number
+            )
             raise
 
     def delete_message(self, message_id: int) -> None:
@@ -459,12 +484,9 @@ class HuaweiSmsInboxSensor(SensorEntity):
                 # Call the modem endpoint directly, as done in add_contact().
                 # This avoids compatibility regressions in the pb_delete()
                 # helper while preserving the payload expected by HiLink.
-                client.pb._session.post_set(
-                    "pb/pb-delete", {"Index": contact_id}
-                )
+                client.pb._session.post_set("pb/pb-delete", {"Index": contact_id})
         except Exception:
             _LOGGER.exception(
                 "Impossible de supprimer le contact SIM Huawei %s", contact_id
             )
             raise
-

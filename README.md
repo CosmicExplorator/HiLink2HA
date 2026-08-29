@@ -18,7 +18,10 @@ Custom Home Assistant integration for sending, receiving and managing SMS with H
 1. In HACS, add this repository as a custom repository of type **Integration**.
 2. Install **Huawei HiLink SMS**.
 3. Restart Home Assistant.
-4. Add the YAML configuration below.
+4. Go to **Settings → Devices & services → Add integration**.
+5. Search for **Huawei HiLink SMS**, enter the modem URL and complete the connection test.
+
+The UI setup is recommended. YAML remains available temporarily for existing installations:
 
 ```yaml
 sensor:
@@ -32,7 +35,7 @@ sensor:
     interactions_file: /config/huawei_sms_interactions.yaml
 ```
 
-The interactions file must explicitly map names accepted over SMS to Home Assistant entities:
+SMS commands are disabled when the allowed-senders option is empty. If enabled, the interactions file must explicitly map names accepted over SMS to Home Assistant entities:
 
 ```yaml
 targets:

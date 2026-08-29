@@ -1,10 +1,15 @@
 {
   "domain": "huawei_sms",
   "name": "Huawei HiLink SMS",
-  "codeowners": ["@CosmicExplorator"],
+  "codeowners": [
+    "@CosmicExplorator"
+  ],
   "documentation": "https://github.com/CosmicExplorator/HiLink2HA",
   "issue_tracker": "https://github.com/CosmicExplorator/HiLink2HA/issues",
   "iot_class": "local_polling",
-  "requirements": ["huawei-lte-api==2.0.1"],
-  "version": "0.1.0"
+  "requirements": [
+    "huawei-lte-api==2.0.1"
+  ],
+  "version": "0.2.0",
+  "config_flow": true
 }

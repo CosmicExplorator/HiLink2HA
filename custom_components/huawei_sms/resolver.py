@@ -1,8 +1,8 @@
 """Safely resolve personal names to YAML-declared entity IDs."""
 
-from typing import Any
 import re
 import unicodedata
+from typing import Any
 
 ENTITY_ID_RE = re.compile(r"^[a-z0-9_]+\.[a-z0-9_]+$")
 
@@ -18,8 +18,10 @@ class EntityResolver:
 
     def __init__(self, document: dict[str, Any]) -> None:
         targets = document.get("targets") if isinstance(document, dict) else None
-        if not isinstance(targets, dict) or not targets:
-            raise ValueError("Le fichier interactions doit contenir un mapping targets.")
+        if not isinstance(targets, dict):
+            raise ValueError(
+                "Le fichier interactions doit contenir un mapping targets."
+            )
         self._entities: dict[str, str] = {}
         self._index(targets, ())
 
@@ -70,4 +72,3 @@ class EntityResolver:
         if len(unique) > 1:
             raise ValueError("Cible ambiguë; précisez l'équipement.")
         return unique.pop()
-

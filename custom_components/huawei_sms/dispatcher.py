@@ -45,4 +45,3 @@ class InteractionDispatcher:
         if intent.value is not None:
             return f"OK, {entity_id} réglé à {intent.value:g} °C."
         return f"OK, commande envoyée à {entity_id}."
-

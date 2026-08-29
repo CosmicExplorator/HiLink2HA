@@ -1,8 +1,8 @@
 """Generic vocabulary and intent families for SMS interactions."""
 
+import re
 from dataclasses import dataclass
 from enum import StrEnum
-import re
 
 
 class InteractionFamily(StrEnum):
@@ -82,4 +82,3 @@ def understand(payload: str) -> Intent:
         return Intent(InteractionFamily.QUERY, "state", target)
 
     raise ValueError("Instruction inconnue.")
-
