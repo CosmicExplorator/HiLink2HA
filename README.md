@@ -2,6 +2,8 @@
 
 [Français](README.fr.md)
 
+See [FILES.md](FILES.md) for a short bilingual description of every project file.
+
 Custom Home Assistant integration for sending, receiving and managing SMS with Huawei modems running in HiLink mode. Initially developed and tested with the Huawei E3372 at `http://192.168.8.1`.
 
 ## Features
