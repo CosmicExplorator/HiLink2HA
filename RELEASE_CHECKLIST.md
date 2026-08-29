@@ -11,6 +11,7 @@ This file tracks the work required before publishing Huawei HiLink SMS through H
 - [x] English and French service translations
 - [x] Open-source license
 - [x] Original brand icon (no Huawei or Home Assistant trademark)
+- [x] Provide the icon both for HACS and Home Assistant 2026.3+
 - [x] HACS and Hassfest GitHub Actions
 - [x] Python compilation and unit-test workflow
 - [ ] Add a GitHub repository description and topics

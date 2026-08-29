@@ -17,13 +17,14 @@
 | `custom_components/huawei_sms/strings.json` | Contains the default English UI text. | Contient les textes anglais utilisés par défaut dans l’interface. |
 | `custom_components/huawei_sms/translations/en.json` | English translations. | Traductions anglaises. |
 | `custom_components/huawei_sms/translations/fr.json` | French translations. | Traductions françaises. |
+| `custom_components/huawei_sms/brand/icon.png` | Local icon displayed by Home Assistant 2026.3 and later. | Icône locale affichée par Home Assistant 2026.3 et versions ultérieures. |
 
 ## Repository / Dépôt
 
 | File | English | Français |
 | --- | --- | --- |
 | `hacs.json` | Tells HACS how to display and install the repository. | Indique à HACS comment afficher et installer le dépôt. |
-| `brand/icon.png` | Original project icon used for HACS branding. | Icône originale du projet utilisée par HACS. |
+| `brand/icon.png` | Original project icon used in the HACS repository listing. | Icône originale utilisée dans la liste des dépôts HACS. |
 | `README.md` | English installation and usage guide. | Guide d’installation et d’utilisation en anglais. |
 | `README.fr.md` | French installation and usage guide. | Guide d’installation et d’utilisation en français. |
 | `RELEASE_CHECKLIST.md` | Tracks completed work and remaining publication tasks. | Suit les travaux terminés et les étapes restantes avant publication. |
