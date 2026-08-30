@@ -21,5 +21,7 @@ jobs:
         run: ruff check custom_components tests
       - name: Compile integration
         run: python -m compileall -q custom_components/huawei_sms
-      - name: Run unit tests
+      - name: Run tests
+        env:
+           PYTHONPATH: .
         run: pytest -q
