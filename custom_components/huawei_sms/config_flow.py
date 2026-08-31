@@ -38,6 +38,15 @@ def _normalize_url(value: str) -> str:
     return value if value.endswith("/") else f"{value}/"
 
 
+def _is_valid_url(value: str) -> bool:
+    """Return whether a URL is accepted by Home Assistant."""
+    try:
+        cv.url(value)
+    except vol.Invalid:
+        return False
+    return True
+
+
 def _parse_senders(value: str) -> list[str]:
     """Parse one phone number per line or comma-separated phone numbers."""
     return [
@@ -72,7 +81,7 @@ class HuaweiSmsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             url = _normalize_url(user_input[CONF_URL])
             host = urlparse(url).hostname
-            if host is None:
+            if host is None or not _is_valid_url(url):
                 errors[CONF_URL] = "invalid_url"
             else:
                 try:
@@ -98,7 +107,9 @@ class HuaweiSmsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema(
                 {
                     vol.Required(CONF_NAME, default=DEFAULT_NAME): cv.string,
-                    vol.Required(CONF_URL, default=DEFAULT_URL): cv.url,
+                    # cv.url cannot be serialized for the frontend. Validate
+                    # it above after the form has been submitted instead.
+                    vol.Required(CONF_URL, default=DEFAULT_URL): cv.string,
                 }
             ),
             errors=errors,
