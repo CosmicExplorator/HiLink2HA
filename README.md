@@ -52,6 +52,33 @@ Do not expose arbitrary entity IDs. Only messages from `allowed_senders` are int
 
 `huawei_sms.send`, `huawei_sms.delete`, `huawei_sms.delete_all`, `huawei_sms.add_contact`, and `huawei_sms.delete_contact`.
 
+## Lovelace card
+
+The integration bundles a card for reading, replying to, composing, and deleting SMS.
+
+To add it to a dashboard:
+
+1. Restart Home Assistant after installing the integration.
+2. Under **Settings → Dashboards → Resources**, add `/huawei_sms/huawei-sms-card.js` as a **JavaScript module**.
+3. Edit your dashboard, add a **Manual card**, and paste:
+
+```yaml
+type: custom:huawei-sms-card
+entity: sensor.sms_huawei_e3372
+title: Modem messages
+show_unread_only: false
+```
+
+If necessary, replace `sensor.sms_huawei_e3372` with the entity ID of your SMS sensor.
+
+Available options:
+
+- `entity` (required): Huawei SMS sensor entity ID.
+- `title`: card heading.
+- `show_unread_only`: only display unread messages when `true`.
+
+The card displays SMS content with text-only DOM nodes and asks for confirmation before deletion.
+
 ## Status
 
 This is an early community release. Back up the modem inbox before testing destructive services. Configuration through the Home Assistant UI is planned.

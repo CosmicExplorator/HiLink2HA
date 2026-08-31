@@ -18,6 +18,7 @@
 | `custom_components/huawei_sms/translations/en.json` | English translations. | Traductions anglaises. |
 | `custom_components/huawei_sms/translations/fr.json` | French translations. | Traductions françaises. |
 | `custom_components/huawei_sms/brand/icon.png` | Local icon displayed by Home Assistant 2026.3 and later. | Icône locale affichée par Home Assistant 2026.3 et versions ultérieures. |
+| `custom_components/huawei_sms/frontend/huawei-sms-card.js` | Bundled Lovelace card for viewing and managing SMS. | Carte Lovelace intégrée pour consulter et gérer les SMS. |
 
 ## Repository / Dépôt
 

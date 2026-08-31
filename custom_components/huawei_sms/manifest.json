@@ -5,11 +5,14 @@
     "@CosmicExplorator"
   ],
   "config_flow": true,
+  "dependencies": [
+    "http"
+  ],
   "documentation": "https://github.com/CosmicExplorator/HiLink2HA",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/CosmicExplorator/HiLink2HA/issues",
   "requirements": [
     "huawei-lte-api==2.0.1"
   ],
-  "version": "0.1.2"
+  "version": "0.1.3"
 }

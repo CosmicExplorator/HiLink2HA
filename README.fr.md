@@ -52,6 +52,33 @@ N’exposez pas arbitrairement toutes les entités. Seuls les messages provenant
 
 `huawei_sms.send`, `huawei_sms.delete`, `huawei_sms.delete_all`, `huawei_sms.add_contact` et `huawei_sms.delete_contact`.
 
+## Carte Lovelace
+
+L’intégration fournit une carte permettant de lire, répondre, rédiger et supprimer des SMS.
+
+Pour l’ajouter à un tableau de bord :
+
+1. Redémarrez Home Assistant après l’installation de l’intégration.
+2. Dans **Paramètres → Tableaux de bord → Ressources**, ajoutez `/huawei_sms/huawei-sms-card.js` avec le type **Module JavaScript**.
+3. Modifiez votre tableau de bord, ajoutez une **carte manuelle**, puis collez :
+
+```yaml
+type: custom:huawei-sms-card
+entity: sensor.sms_huawei_e3372
+title: Messages du modem
+show_unread_only: false
+```
+
+Si nécessaire, remplacez `sensor.sms_huawei_e3372` par l’identifiant du capteur SMS de votre installation.
+
+Options disponibles :
+
+- `entity` (obligatoire) : identifiant du capteur Huawei SMS.
+- `title` : titre de la carte.
+- `show_unread_only` : affiche uniquement les messages non lus si la valeur est `true`.
+
+La carte affiche le contenu des SMS uniquement avec des nœuds texte et demande confirmation avant toute suppression.
+
 ## État du projet
 
 Il s’agit d’une première version communautaire. Sauvegardez la boîte du modem avant de tester les services destructifs. La configuration graphique Home Assistant est prévue.
