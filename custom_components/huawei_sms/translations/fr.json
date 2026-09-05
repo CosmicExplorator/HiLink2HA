@@ -45,6 +45,49 @@
           "name": "Identifiant du contact"
         }
       }
+    },
+    "enable_pin": {
+      "name": "Activer le code PIN SIM",
+      "description": "Nécessite le PIN actuel (4 à 8 chiffres). Un PIN incorrect consomme une tentative et peut bloquer la SIM. Aucun nouvel essai automatique.",
+      "fields": {
+        "current_pin": {
+          "name": "PIN actuel"
+        }
+      }
+    },
+    "disable_pin": {
+      "name": "Désactiver le code PIN SIM",
+      "description": "Nécessite le PIN actuel (4 à 8 chiffres). Un PIN incorrect consomme une tentative et peut bloquer la SIM. Aucun nouvel essai automatique.",
+      "fields": {
+        "current_pin": {
+          "name": "PIN actuel"
+        }
+      }
+    },
+    "change_pin": {
+      "name": "Changer le code PIN SIM",
+      "description": "Nécessite le PIN actuel (4 à 8 chiffres). Un PIN incorrect consomme une tentative et peut bloquer la SIM. Aucun nouvel essai automatique.",
+      "fields": {
+        "current_pin": {
+          "name": "PIN actuel"
+        },
+        "new_pin": {
+          "name": "Nouveau PIN"
+        }
+      }
+    },
+    "get_pin_status": {
+      "name": "Lire le statut du code PIN SIM",
+      "description": "Lit le statut SIM/PIN et les tentatives restantes si disponibles. Ne révèle pas le code PIN. Les états sont les codes bruts du modem."
+    },
+    "verify_pin": {
+      "name": "Déverrouiller la SIM avec le PIN",
+      "description": "Valide le PIN après le démarrage du modem sans désactiver sa protection. Un PIN incorrect consomme une tentative. Aucun nouvel essai automatique.",
+      "fields": {
+        "current_pin": {
+          "name": "PIN actuel"
+        }
+      }
     }
   },
   "config": {

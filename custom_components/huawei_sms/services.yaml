@@ -38,3 +38,42 @@ delete_contact:
         number:
           min: 0
           mode: box
+
+enable_pin:
+  fields:
+    current_pin:
+      required: true
+      selector:
+        text:
+          type: password
+
+disable_pin:
+  fields:
+    current_pin:
+      required: true
+      selector:
+        text:
+          type: password
+
+change_pin:
+  fields:
+    current_pin:
+      required: true
+      selector:
+        text:
+          type: password
+    new_pin:
+      required: true
+      selector:
+        text:
+          type: password
+
+get_pin_status: {}
+
+verify_pin:
+  fields:
+    current_pin:
+      required: true
+      selector:
+        text:
+          type: password

@@ -12,7 +12,8 @@ import voluptuous as vol
 from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_NAME, CONF_URL
-from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.core import HomeAssistant, ServiceCall, SupportsResponse
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 from homeassistant.util import dt as dt_util
@@ -32,6 +33,7 @@ from .const import (
 from .dictionary import understand
 from .dispatcher import InteractionDispatcher
 from .interaction import can_reply_to_sender, validate_sms
+from .pin import OPERATIONS, PinManager, validate_pin
 from .resolver import EntityResolver
 
 _LOGGER = logging.getLogger(__name__)
@@ -167,6 +169,52 @@ async def async_setup_platform(
             schema=vol.Schema({vol.Required("contact_id"): vol.Coerce(int)}),
         )
 
+    async def async_read_pin_status(call: ServiceCall) -> dict[str, Any]:
+        """Read SIM status independently of SMS availability."""
+        try:
+            status = await hass.async_add_executor_job(sensor.pin_manager.read_status)
+        except Exception:
+            raise HomeAssistantError(
+                "Impossible de lire le statut PIN : vérifier la connexion "
+                "et la compatibilité du modem."
+            ) from None
+        sensor.pin_status = status
+        sensor.async_write_ha_state()
+        return status
+
+    async def async_operate_pin(call: ServiceCall) -> None:
+        """Perform one explicit operation without logging PINs or retrying."""
+        try:
+            await hass.async_add_executor_job(
+                sensor.pin_manager.operate,
+                call.service,
+                call.data["current_pin"],
+                call.data.get("new_pin"),
+            )
+        except Exception:
+            raise HomeAssistantError(
+                "Opération PIN refusée ou résultat incertain. Lire le statut PIN "
+                "et vérifier le code avant tout nouvel essai ; les tentatives "
+                "incorrectes peuvent bloquer la SIM et nécessiter le PUK."
+            ) from None
+        # Do not report a successful mutation as failed if a subsequent read fails.
+        sensor.pin_status = {}
+        sensor.async_write_ha_state()
+
+    if not hass.services.has_service("huawei_sms", "get_pin_status"):
+        hass.services.async_register(
+            "huawei_sms", "get_pin_status", async_read_pin_status,
+            schema=vol.Schema({}), supports_response=SupportsResponse.ONLY,
+        )
+    for service in OPERATIONS:
+        if not hass.services.has_service("huawei_sms", service):
+            fields = {vol.Required("current_pin"): validate_pin}
+            if service == "change_pin":
+                fields[vol.Required("new_pin")] = validate_pin
+            hass.services.async_register(
+                "huawei_sms", service, async_operate_pin, schema=vol.Schema(fields)
+            )
+
     add_entities([sensor], True)
 
 
@@ -208,6 +256,8 @@ class HuaweiSmsInboxSensor(SensorEntity):
         self._attr_name = name
         self._attr_unique_id = "huawei_e3372_sms_inbox"
         self._url = url
+        self.pin_manager = PinManager(url, Connection, Client)
+        self.pin_status: dict[str, Any] = {}
         self._max_messages = max_messages
         self._country_code = country_code
         self._allowed_senders = {
@@ -231,6 +281,7 @@ class HuaweiSmsInboxSensor(SensorEntity):
         return {
             "messages": self._messages,
             "contacts": self._contacts,
+            "pin_status": self.pin_status,
             "last_refresh": dt_util.utcnow().isoformat(),
         }
 

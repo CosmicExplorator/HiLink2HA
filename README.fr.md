@@ -82,3 +82,56 @@ La carte affiche le contenu des SMS uniquement avec des nœuds texte et demande 
 ## État du projet
 
 Il s’agit d’une première version communautaire. Sauvegardez la boîte du modem avant de tester les services destructifs. La configuration graphique Home Assistant est prévue.
+
+## Gestion du code PIN SIM
+
+Dans **Outils de développement → Actions**, utiliser :
+
+- `huawei_sms.get_pin_status` : lire le statut SIM/PIN et les tentatives restantes.
+- `huawei_sms.verify_pin` : déverrouiller la SIM après démarrage avec `current_pin`, sans désactiver la protection PIN.
+- `huawei_sms.enable_pin` : activer la demande du PIN avec `current_pin`.
+- `huawei_sms.disable_pin` : désactiver la demande du PIN avec `current_pin`.
+- `huawei_sms.change_pin` : changer le PIN avec `current_pin` et `new_pin`.
+
+Les PIN doivent être des chaînes de 4 à 8 chiffres, par exemple `"0123"`, pour
+conserver les zéros initiaux. Les champs de saisie sont masqués. L'intégration ne
+conserve pas les PIN dans ses attributs ou sa configuration. Éviter de les écrire
+dans des automatisations : leur YAML et leurs traces peuvent conserver les données
+d'action. Un mauvais PIN consomme une tentative ; la SIM peut ensuite exiger le
+PUK. Aucun essai automatique n'est effectué. Ces fonctions dépendent du firmware
+HiLink et de ses permissions d'accès.
+
+**Le code PIN actuel ne peut pas être récupéré par cette fonctionnalité.** La
+lecture retourne uniquement `sim_state`, `pin_opt_state` (codes bruts du modem),
+`pin_attempts_remaining` et `puk_attempts_remaining`. Un champ non fourni vaut
+`null`. Le résultat est aussi disponible dans l'attribut `pin_status` du capteur
+après une lecture réussie, puis invalidé après une modification réussie. Il n'est
+pas actualisé automatiquement.
+
+Exemple de lecture dans une séquence d'actions :
+
+```yaml
+- action: huawei_sms.get_pin_status
+  response_variable: sim_pin
+```
+
+Redémarrer Home Assistant après la mise à jour pour charger les nouvelles actions.
+
+### Carte de gestion du PIN
+
+Ajouter `/huawei_sms/huawei-sim-pin-card.js` comme ressource Lovelace de type
+**Module JavaScript**, puis ajouter cette carte au dashboard :
+
+```yaml
+type: custom:huawei-sim-pin-card
+entity: sensor.sms_huawei_e3372
+title: Code PIN SIM
+```
+
+La carte propose la lecture du statut, le déverrouillage, l'activation, la désactivation et le
+changement du PIN avec confirmation du nouveau code. Les champs sont masqués et
+effacés à l'envoi. Cliquer sur **Lire le statut** pour actualiser les informations.
+
+Le déverrouillage est manuel : aucun PIN n’est mémorisé ni envoyé automatiquement
+au démarrage. Les tests automatisés utilisent un modem simulé ; les opérations
+doivent être validées sur les modèles HiLink concernés avec une SIM protégée.

@@ -82,3 +82,54 @@ The card displays SMS content with text-only DOM nodes and asks for confirmation
 ## Status
 
 This is an early community release. Back up the modem inbox before testing destructive services. Configuration through the Home Assistant UI is planned.
+
+## SIM PIN management
+
+Under **Developer tools → Actions**, use:
+
+- `huawei_sms.get_pin_status`: read SIM/PIN status and remaining attempts.
+- `huawei_sms.verify_pin`: unlock the SIM after startup using `current_pin`, without disabling PIN protection.
+- `huawei_sms.enable_pin`: enable PIN verification using `current_pin`.
+- `huawei_sms.disable_pin`: disable PIN verification using `current_pin`.
+- `huawei_sms.change_pin`: change the PIN using `current_pin` and `new_pin`.
+
+PINs must be strings of 4–8 digits, e.g. `"0123"`, preserving leading zeroes.
+Input fields are masked; the integration does not retain PINs in its attributes
+or configuration. Avoid putting PINs in automations, whose YAML and traces may
+retain action data. Incorrect PINs consume attempts and may require the PUK to
+unblock the SIM. Operations are never automatically retried. Support depends on
+HiLink firmware and access permissions.
+
+**This feature cannot retrieve the current PIN.** Status responses contain only
+`sim_state`, `pin_opt_state` (raw modem codes), `pin_attempts_remaining` and
+`puk_attempts_remaining`; absent fields are `null`. Successful reads also populate
+the sensor's `pin_status` attribute, which is invalidated after successful changes.
+It is not refreshed automatically.
+
+Example action sequence:
+
+```yaml
+- action: huawei_sms.get_pin_status
+  response_variable: sim_pin
+```
+
+Restart Home Assistant after updating to load the new actions.
+
+### PIN management card
+
+Add `/huawei_sms/huawei-sim-pin-card.js` as a Lovelace **JavaScript module** resource,
+then add this card to your dashboard:
+
+```yaml
+type: custom:huawei-sim-pin-card
+entity: sensor.sms_huawei_e3372
+title: SIM PIN
+```
+
+The card reads status, enables/disables PIN verification and changes the PIN with
+new-PIN confirmation. Fields are masked and cleared when submitted. Click the
+status button to refresh the information. Card controls currently use French labels.
+
+PIN unlocking is manual: no PIN is stored or submitted automatically at startup.
+Automated tests use a simulated modem; PIN operations still require validation
+on the relevant HiLink models using a PIN-protected SIM.

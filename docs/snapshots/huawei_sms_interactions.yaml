@@ -1,0 +1,8 @@
+targets:
+  salon:
+    temperature: sensor.temperature_salon
+    lumiere: light.salon
+  portail:
+    equipement: cover.portail
+  chauffage:
+    salon: climate.salon

@@ -7,18 +7,21 @@
 | `custom_components/huawei_sms/__init__.py` | Loads and unloads the integration. | Charge et décharge l’intégration. |
 | `custom_components/huawei_sms/config_flow.py` | Provides UI setup, the read-only connection test and editable options. | Fournit la configuration graphique, le test de connexion en lecture seule et les options. |
 | `custom_components/huawei_sms/const.py` | Contains shared names and default values. | Contient les noms et valeurs par défaut partagés. |
-| `custom_components/huawei_sms/sensor.py` | Reads SMS and SIM contacts, exposes the sensor and registers SMS services. | Lit les SMS et contacts SIM, expose le capteur et enregistre les services SMS. |
+| `custom_components/huawei_sms/sensor.py` | Reads SMS and SIM contacts, exposes the sensor and registers SMS and PIN services. | Lit les SMS et contacts SIM, expose le capteur et enregistre les services SMS et PIN. |
+| `custom_components/huawei_sms/pin.py` | Validates PINs, performs SIM PIN operations and reads status without retaining PINs. | Valide les PIN, effectue les opérations PIN SIM et lit leur statut sans conserver les codes. |
 | `custom_components/huawei_sms/interaction.py` | Normalizes and validates received SMS commands. | Normalise et valide les commandes reçues par SMS. |
 | `custom_components/huawei_sms/dictionary.py` | Converts recognized French command words into actions. | Convertit les mots de commande français reconnus en actions. |
 | `custom_components/huawei_sms/resolver.py` | Resolves allowed names to explicitly declared Home Assistant entities. | Associe les noms autorisés aux entités Home Assistant déclarées explicitement. |
 | `custom_components/huawei_sms/dispatcher.py` | Reads entity states or calls an authorized Home Assistant service. | Lit l’état des entités ou appelle un service Home Assistant autorisé. |
 | `custom_components/huawei_sms/manifest.json` | Declares the integration, version and Python dependency to Home Assistant. | Déclare l’intégration, sa version et sa dépendance Python à Home Assistant. |
-| `custom_components/huawei_sms/services.yaml` | Defines the fields accepted by SMS and contact services. | Définit les champs acceptés par les services SMS et contacts. |
+| `custom_components/huawei_sms/services.yaml` | Defines the fields accepted by SMS, contact and PIN services. | Définit les champs acceptés par les services SMS, contacts et PIN. |
 | `custom_components/huawei_sms/strings.json` | Contains the default English UI text. | Contient les textes anglais utilisés par défaut dans l’interface. |
 | `custom_components/huawei_sms/translations/en.json` | English translations. | Traductions anglaises. |
 | `custom_components/huawei_sms/translations/fr.json` | French translations. | Traductions françaises. |
 | `custom_components/huawei_sms/brand/icon.png` | Local icon displayed by Home Assistant 2026.3 and later. | Icône locale affichée par Home Assistant 2026.3 et versions ultérieures. |
 | `custom_components/huawei_sms/frontend/huawei-sms-card.js` | Bundled Lovelace card for viewing and managing SMS. | Carte Lovelace intégrée pour consulter et gérer les SMS. |
+
+| `custom_components/huawei_sms/frontend/huawei-sim-pin-card.js` | SIM PIN status and management card. | Carte de lecture du statut et de gestion du PIN SIM. |
 
 ## Repository / Dépôt
 

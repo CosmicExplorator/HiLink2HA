@@ -45,6 +45,49 @@
           "name": "Contact ID"
         }
       }
+    },
+    "enable_pin": {
+      "name": "Enable SIM PIN",
+      "description": "Requires the current PIN (4–8 digits). An incorrect PIN consumes an attempt and can block the SIM. No automatic retries.",
+      "fields": {
+        "current_pin": {
+          "name": "Current PIN"
+        }
+      }
+    },
+    "disable_pin": {
+      "name": "Disable SIM PIN",
+      "description": "Requires the current PIN (4–8 digits). An incorrect PIN consumes an attempt and can block the SIM. No automatic retries.",
+      "fields": {
+        "current_pin": {
+          "name": "Current PIN"
+        }
+      }
+    },
+    "change_pin": {
+      "name": "Change SIM PIN",
+      "description": "Requires the current PIN (4–8 digits). An incorrect PIN consumes an attempt and can block the SIM. No automatic retries.",
+      "fields": {
+        "current_pin": {
+          "name": "Current PIN"
+        },
+        "new_pin": {
+          "name": "New PIN"
+        }
+      }
+    },
+    "get_pin_status": {
+      "name": "Read SIM PIN status",
+      "description": "Read SIM/PIN status and remaining attempts when available. Does not reveal the PIN. States are raw modem codes."
+    },
+    "verify_pin": {
+      "name": "Unlock SIM with PIN",
+      "description": "Submit the PIN after modem startup without disabling PIN protection. An incorrect PIN consumes an attempt. No automatic retries.",
+      "fields": {
+        "current_pin": {
+          "name": "Current PIN"
+        }
+      }
     }
   },
   "config": {
